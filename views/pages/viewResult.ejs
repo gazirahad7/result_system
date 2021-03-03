@@ -1,0 +1,228 @@
+<%- include("../template/header"); -%> <%- include("../template/layout"); -%>
+<div class="container my-ml">
+  <% let subjectCount = showRes.map((item ,index)=> {%> <% console.log("HI",
+  index + 1) %> <% }) %> <%if( countSubLen[0].Subject == subjectCount.length)
+  {%> <% if(showRes.length != 0 ) { %>
+
+  <div class="profile-div">
+    <div class="st-profile has-text-left has-text-weight-bold">
+      <h2 class="has-text-centered has-text-weight-bold mb-0">Student Info:</h2>
+      <!-- <progress class="progress is-primary" value="100" max="100">10%</progress> -->
+      <p>Semester: <%= showRes[0].se_season + " " + showRes[0].se_year %></p>
+      <p id="studentId" data-id="<%= searchText%>">
+        Student ID: <%= searchText%>
+      </p>
+      <p>Name: <%= showRes[0].st_name %></p>
+    </div>
+  </div>
+
+  <table class="mt-3">
+    <tr class="my-thead">
+      <th>SL</th>
+      <th>Subject Name</th>
+      <th>Credit</th>
+      <th>Written</th>
+      <th>Viva</th>
+      <th>Assignment</th>
+      <th>Quiz</th>
+      <th>Sum Marks</th>
+      <th>Grade Point</th>
+      <th>Letter Grade</th>
+    </tr>
+    <tbody id="result">
+      <% showRes.map((item ,index)=> {%>
+      <tr>
+        <td><%= index + 1 %></td>
+        <td><%= item.subject_name %></td>
+        <td class="d-none subId"><%= item.subject_ID %></td>
+        <td class="credit_hour"><%= item.credit_hour %></td>
+        <td class="st_wrt_mark"><%= item.st_wrt_mark %></td>
+        <td class="st_viva_mark"><%= item.st_viva_mark %></td>
+        <td class="st_ass_mark"><%= item.st_ass_mark %></td>
+        <td class="st_quiz_mark"><%= item.st_quiz_mark %></td>
+        <td class="total"></td>
+        <td class="point"></td>
+        <td class="letter"></td>
+      </tr>
+      <%}) %>
+    </tbody>
+    <tfoot id="result-footer">
+      <tr>
+        <td colspan="7">Total Marks:</td>
+        <td id="total-mark"></td>
+        <td id="avg-point"></td>
+        <td id="avg-letter"></td>
+        <!-- <td id="count-fel"></td> -->
+      </tr>
+    </tfoot>
+  </table>
+
+  <div id="count-fel"></div>
+
+  <%} else if(showRes.length == 0) {%>
+  <center>
+    <div
+      class="box has-text-centered mt-4 p-2 has-background-danger is-size-5 has-text-weight-bold has-text-white box has-text-centered"
+      style="width: 450px"
+    >
+      <p>
+        <i
+          class="las la-exclamation-triangle is-size-2"
+          style="width: 450px"
+        ></i>
+      </p>
+      Invalid Student ID:<strong class="ml-2 has-text-white"
+        >"<%= searchText %>"</strong
+      >
+    </div>
+  </center>
+
+  <%} %> <% } else{%>
+  <center>
+    <div
+      class="box has-text-centered mt-5 has-background-danger is-size-5 has-text-weight-bold has-text-white"
+      style="width: 450px"
+    >
+      <p><i class="las la-cogs is-size-1"></i></p>
+      <p class="p-1">Result processing.....</p>
+    </div>
+  </center>
+  <%}%>
+</div>
+<script>
+  let allGrades = [];
+  console.log("allGrades", allGrades);
+  /*=================================================*/
+  /***************** Get Semester ID  ***************/
+  /*==================================================*/
+  document.addEventListener("DOMContentLoaded", () => {
+    const studentId = document.getElementById("studentId").dataset.id;
+    fetch(`http://localhost:8070/get-grade-point?studentId=${studentId}`)
+      .then((data) => data.json())
+      .then((resp) => {
+        allGrades = resp.allGrades;
+        const { allPassMarks } = resp;
+        console.log("ddd", allPassMarks);
+        const result = document.getElementById("result");
+        let sumAllSubMarks = 0;
+        let sumAllSubPoint = 0;
+        //let totalPoint = 0;
+
+        let countFel = 0;
+        let isAllPass = true;
+        for (let i = 0, row; (row = result.rows[i]); i++) {
+          console.log(row.querySelector(".total"));
+          const total = row.querySelector(".total");
+          const point = row.querySelector(".point");
+          const letter = row.querySelector(".letter");
+
+          // catch subject marks
+          const creditHourInp = row.querySelector(".credit_hour");
+          const stWrtMarkInp = row.querySelector(".st_wrt_mark");
+          const stVivaMarkInp = row.querySelector(".st_viva_mark");
+          const stAssMarkInp = row.querySelector(".st_ass_mark");
+          const stQuizMarkInp = row.querySelector(".st_quiz_mark");
+          const subjectID = row.querySelector(".subId").textContent;
+          console.log("subID", subjectID);
+          // catch  subject number
+          const tPoints = point;
+          const creditHour = Number(creditHourInp.textContent);
+          const stWrtMark = Number(stWrtMarkInp.textContent);
+          const stVivaMark = Number(stVivaMarkInp.textContent);
+          const stAssMark = Number(stAssMarkInp.textContent);
+          const stQuizMark = Number(stQuizMarkInp.textContent);
+          // sum  a subject mark
+
+          let totalMark = stWrtMark + stVivaMark + stAssMark + stQuizMark;
+          total.textContent = totalMark;
+
+          // subject credit 1.5
+          if (creditHour === 1.5) totalMark *= 2;
+          // find subject id
+          const passMarks = allPassMarks.find(
+            (mark) => mark.sub_id === subjectID
+          );
+          console.log("PassMarks", passMarks);
+          let isPass = true;
+          //  pass marks less than student fail
+          if (stWrtMark < Number(passMarks.written_pass)) {
+            stWrtMarkInp.style.color = "red";
+            isPass = false;
+          }
+          if (stVivaMark < Number(passMarks.viva_pass)) {
+            stVivaMarkInp.style.color = "red";
+            isPass = false;
+          }
+          if (stAssMark < Number(passMarks.ass_pass)) {
+            stAssMarkInp.style.color = "red";
+            isPass = false;
+          }
+          if (stQuizMark < Number(passMarks.quiz_pass)) {
+            stQuizMarkInp.style.color = "red";
+            isPass = false;
+          }
+          // not is pass than fel
+          if (!isPass) isAllPass = false;
+          const grade = getGradeByNum(isPass ? totalMark : 0);
+          point.textContent = grade.point;
+          letter.textContent = grade.letter;
+
+          // console.log("PPPP", point);
+          // console.log("tPoints", tPoints.innerHTML);
+
+          sumAllSubMarks += Number(totalMark);
+          sumAllSubPoint += parseFloat(tPoints.innerHTML);
+          console.log("Sum point", sumAllSubPoint);
+          countFel += Number(!isPass);
+          console.log("Count", countFel);
+        }
+
+        // catch and show total result
+        const totalMarks = document.getElementById("total-mark");
+        const avgPoint = document.getElementById("avg-point");
+        const avgLetter = document.getElementById("avg-letter");
+        const totalFel = document.getElementById("count-fel");
+        totalMarks.textContent = sumAllSubMarks;
+        avgPoint.textContent = sumAllSubPoint / result.childElementCount;
+
+        // const avgGrade = getGradeByNum(
+        //   isAllPass ? sumAllSubMarks / result.childElementCount : 0
+        //   //isAllPass ? sumAllSubPoint / result.childElementCount : 0
+        // );
+        // avgPoint.textContent = avgGrade.point;
+        // avgLetter.textContent = avgGrade.letter;
+
+        const avgGrade = getGradeByLetter(
+          //isAllPass ? sumAllSubMarks / result.childElementCount : 0
+          isAllPass ? sumAllSubPoint / result.childElementCount : 0
+        );
+        avgLetter.textContent = avgGrade.letter;
+
+        if (countFel === 0) {
+          totalFel.style.displaye = "none";
+        } else {
+          totalFel.innerHTML = `<h1 class="has-text-centered mt-4 p-2 has-background-danger is-size-5 has-text-weight-bold has-text-white">You Failed: ${countFel} Subject.</h1>`;
+        }
+      });
+  });
+
+  /*=================================================*/
+  /***************** Grade Cal Function  ***************/
+  /*==================================================*/
+  function getGradeByNum(number) {
+    const grade = allGrades.find(
+      (grade) => number >= grade.min_num && number <= grade.max_num
+    );
+    //console.log(allGrades, number, grade);
+    return { point: grade.grade_point, letter: grade.grade_latter };
+  }
+  //
+  function getGradeByLetter(point) {
+    const grade = allGrades.find(
+      (grade) => point >= grade.grade_point && point <= grade.grade_point
+    );
+    //console.log(allGrades, number, grade);
+    return { letter: grade.grade_latter };
+  }
+</script>
+<%-include("../template/footer"); -%>

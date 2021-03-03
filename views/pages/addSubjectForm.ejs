@@ -1,0 +1,65 @@
+<%- include("../template/header"); -%> <%- include("../template/layout"); -%>
+<div class="main-form">
+  <div class="form-div box">
+    <form action="/insert_sub" class="control" method="POST">
+      <h1
+        class="is-size-4 has-text-centered mb-3 has-background-primary-light has-text-weight-bold"
+      >
+        Add Subject Form
+      </h1>
+
+      <div>
+        <label class="label">Subject Name:</label>
+        <input
+          class="input is-normal"
+          type="text"
+          name="subName"
+          placeholder="Enter subject name"
+          onblur="getUseSub(event)"
+          required
+        />
+      </div>
+      <div id="use-subjects"></div>
+
+      <div>
+        <label class="label">Subject Code:</label>
+        <input
+          class="input is-normal"
+          type="text"
+          name="subCode"
+          placeholder="Enter subject code"
+          required
+        />
+      </div>
+      <div>
+        <label class="label">Subjcet Type:</label>
+
+        <input type="radio" name="subType" value="Theory" />
+        <label class="radio">Theory</label>
+        <br />
+        <input type="radio" name="subType" value="Sessional" />
+        <label class="radio">Sessional</label>
+      </div>
+
+      <div>
+        <label class="label">Subjcet Credit Hour:</label>
+
+        <input type="radio" name="subCredit" value="1.5" />
+        <label>1.5 CREDITS</label>
+        <br />
+        <input type="radio" name="subCredit" value="3" />
+        <label>3 CREDITS</label>
+      </div>
+
+      <button
+        class="button mt-5 is-warning has-text-dark is-rounded has-text-weight-bold"
+        type="submit"
+      >
+        Submit
+      </button>
+    </form>
+  </div>
+</div>
+
+<script src="/js/addSub.js"></script>
+<%- include("../template/footer"); -%>

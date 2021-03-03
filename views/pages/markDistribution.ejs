@@ -1,0 +1,249 @@
+<%- include("../template/header"); -%> <%- include("../template/layout"); -%>
+<div class="main-form container">
+  <div class="form-div box">
+    <div class="">
+      <form action="/insert-mark-dis" method="POST" class="control">
+        <h2
+          class="is-size-4 has-text-centered mb-3 has-background-primary-light has-text-weight-bold"
+        >
+          Mark distribution
+        </h2>
+
+        <div>
+          <select class="select" name="semID" onchange="getSubBySem(event)">
+            <option disabled selected>Choose Semester</option>
+
+            <% showSemester.map(ele =>{ %>
+            <option value="<%= ele.se_id %>">
+              <%= ele.se_season + ' ' + ele.se_year %>
+            </option>
+
+            <% }) %>
+          </select>
+          <select
+            class="select mt-3"
+            id="subjects"
+            name="subId"
+            onchange="getCredit(event)"
+          >
+            <option disabled selected>Select Semester First</option>
+          </select>
+        </div>
+        <h2
+          class="has-text-centered mt-2 has-background-primary is-size-5 has-text-white"
+          id="selected-sub"
+        ></h2>
+
+        <div id="mark-dis">
+          <div
+            id="total-num"
+            class="has-text-centered has-text-danger is-size-5"
+          ></div>
+          <div id="show-total-marks"></div>
+          <label class="label">Written</label>
+
+          <div class="field is-horizontal">
+            <input
+              class="input is-normal mr-1"
+              type="number"
+              id="wrCount"
+              name="wtTotalNum"
+              onblur="sumMarks(event)"
+              placeholder="Enter Total Number"
+              required
+            />
+            <input
+              class="input is-normal"
+              type="number"
+              name="wtPassNum"
+              id="wt-pass"
+              onblur="sumPassMarks(event)"
+              placeholder="Enter Pass Number"
+              required
+            />
+          </div>
+          <label class="label">Viva</label>
+
+          <div class="field is-horizontal">
+            <input
+              class="input is-normal mr-1"
+              type="number"
+              name="vivaTotalNum"
+              id="vivaCount"
+              onblur="sumMarks(event)"
+              placeholder="Enter Total Number"
+              required
+            />
+            <input
+              class="input is-normal"
+              type="number"
+              id="viva-pass"
+              onblur="sumPassMarks(event)"
+              name="vivaPassNum"
+              placeholder="Enter Pass Number"
+              required
+            />
+          </div>
+          <label class="label">Assignment</label>
+
+          <div class="field is-horizontal">
+            <input
+              class="input is-normal mr-1"
+              type="number"
+              name="assTotalNum"
+              id="assCount"
+              onblur="sumMarks(event)"
+              placeholder="Enter Total Number"
+              required
+            />
+            <input
+              class="input is-normal"
+              type="number"
+              id="ass-pass"
+              name="assPassNum"
+              onblur="sumPassMarks(event)"
+              placeholder="Enter Pass Number"
+              required
+            />
+          </div>
+
+          <label class="label">Quiz</label>
+
+          <div class="field is-horizontal">
+            <input
+              class="input is-normal mr-1"
+              type="number"
+              name="quTotalNum"
+              id="quizCount"
+              onblur="sumMarks(event)"
+              placeholder="Enter Total Number"
+              required
+            />
+            <input
+              class="input is-normal"
+              type="number"
+              name="quPassNum"
+              id="quiz-pass"
+              onblur="sumPassMarks(event)"
+              placeholder="Enter Pass Number"
+              required
+            />
+          </div>
+        </div>
+        <button
+          onclick="markInsert(event)"
+          class="button mt-3 is-warning has-text-dark is-rounded has-text-weight-bold"
+          type="submit"
+        >
+          Submit
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+<script>
+  /*=================================================*/
+  /***************** Get Semester ID  ***************/
+  /*==================================================*/
+  const getSubBySem = (event) => {
+    //console.log(event.target.value);
+    const semester_id = event.target.value;
+    const markDisForm = document.getElementById("mark-dis");
+
+    fetch(`http://localhost:8070/get-sub-by-id?semester_id=${semester_id}`)
+      .then((res) => res.json())
+      .then((data) => {
+        const subjects = document.getElementById("subjects");
+        const selectOption = '<option value="">Select Subject</option>';
+        subjects.innerHTML =
+          selectOption +
+          data
+            .map(
+              (sub, index) =>
+                `<option value="${sub.subject}" data-credit="${
+                  sub.credit_hour
+                }"><span>${index + 1}.</span>Enter Marks For - ${
+                  sub.subject_name + " " + "(" + sub.subject_type + ")"
+                }</option>`
+            )
+            .join("");
+        subjects.addEventListener("change", (e) => {
+          //console.log(e.target.value);
+          if (e.target.value) {
+            markDisForm.style.display = "block";
+          } else {
+            markDisForm.style.display = "none";
+          }
+        });
+      });
+  };
+  // catch subject credit 3 or 1.5
+  let credit = 0;
+  const getCreditNumber = () => {
+    if (credit === 3) return 100;
+    if (credit === 1.5) return 50;
+  };
+
+  const getCredit = (event) => {
+    const showSelectedSub = document.getElementById("selected-sub");
+    console.log(
+      "selected subject ",
+      event.target.options[event.target.selectedIndex].innerText
+    );
+    const selectedSub =
+      event.target.options[event.target.selectedIndex].textContent;
+    showSelectedSub.innerHTML = selectedSub;
+    credit = Number(
+      event.target.options[event.target.selectedIndex].dataset.credit
+    );
+    document.getElementById(
+      "total-num"
+    ).innerText = `Total Marks = ${getCreditNumber()}`;
+
+    //console.log("Credit", credit);
+  };
+
+  /*=================================================*/
+  /*****************  Sum all Marks  ******************/
+  /*==================================================*/
+  const sumMarks = (event) => {
+    const showTotalMarks = document.getElementById("show-total-marks");
+    const writtenCount = Number(document.getElementById("wrCount").value);
+    const vivaCount = Number(document.getElementById("vivaCount").value);
+    const assCount = Number(document.getElementById("assCount").value);
+    const quizCount = Number(document.getElementById("quizCount").value);
+    const res = writtenCount + vivaCount + assCount + quizCount;
+
+    if (res > getCreditNumber()) {
+      event.target.value = 0;
+      return false;
+    }
+    console.log("Marks", res);
+
+    showTotalMarks.innerHTML = `<p class="has-text-centered has-text-success is-size-6">Counting Total Marks = <span class="is-size-5">${res}</span> </p>`;
+  };
+  /*=================================================*/
+  /***************** Sum Pass Marks  ***************/
+  /*==================================================*/
+  const sumPassMarks = (event) => {
+    const showTotalMarks = document.getElementById("show-total-marks");
+    const writtenCount = Number(document.getElementById("wrCount").value);
+    const vivaCount = Number(document.getElementById("vivaCount").value);
+    const assCount = Number(document.getElementById("assCount").value);
+    const quizCount = Number(document.getElementById("quizCount").value);
+    const writtenPass = Number(document.getElementById("wt-pass").value);
+    const vivaPass = Number(document.getElementById("viva-pass").value);
+    const assPass = Number(document.getElementById("ass-pass").value);
+    const quizPass = Number(document.getElementById("quiz-pass").value);
+
+    if (
+      writtenCount < writtenPass ||
+      vivaCount < vivaPass ||
+      assCount < assPass ||
+      quizCount < quizPass
+    ) {
+      event.target.value = 0;
+    }
+  };
+</script>
+<%- include("../template/footer"); -%>

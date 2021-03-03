@@ -1,0 +1,35 @@
+<%- include("../template/header"); -%> <%- include("../template/layout"); -%>
+
+<div class="container my-ml mt-5">
+  <h1
+    class="has-text-centered has-text-weight-bold p-2 has-background-primary is-size-5 has-text-white"
+  >
+    Searching A Student Result
+  </h1>
+</div>
+
+<div class="my-search mt-5 my-ml">
+  <div class="has-text-centered">
+    <form action="/search-student" method="POST" class="searching-box">
+      <div class="field button has-addons is-rounded">
+        <div class="control">
+          <input
+            class="input is-rounded"
+            name="searchID"
+            type="search"
+            placeholder="Enter student ID"
+          />
+        </div>
+        <div class="control">
+          <button
+            class="button has-background-primary my-search-btn has-text-white has-text-weight-bold is-rounded sub-btn"
+            type="submit"
+          >
+            Search
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<%- include("../template/footer"); -%>

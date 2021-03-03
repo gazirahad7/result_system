@@ -1,0 +1,173 @@
+<%- include("../template/header"); -%> <%- include("../template/layout"); -%>
+<div class="container my-ml">
+  <div class="mt-5">
+    <div class="">
+      <form action="/insert-students-mark" method="POST" class="form-control">
+        <h2
+          class="my-color has-text-centered mb-4 mt-4 has-text-weight-bold p-2 is-size-4 has-background-primary-light"
+        >
+          Insert number by semester
+        </h2>
+
+        <div>
+          <select
+            class="select"
+            name="semId"
+            id="sem-id"
+            onchange="insNumBySem(event)"
+          >
+            <option disabled selected>Choose Semester</option>
+
+            <% showSemester.map(ele =>{ %>
+            <option value="<%= ele.se_id %>">
+              <%= ele.se_season + ' ' + ele.se_year %>
+            </option>
+
+            <% }) %>
+          </select>
+          <select
+            class="select mt-3"
+            name="subId"
+            id="subject-id"
+            onchange="getSubID(event)"
+          >
+            <option disabled selected>Select Semester First</option>
+            <%# showSubjects.map(ele =>{ %>
+            <option value="<%# ele.subject_ID %>">
+              <%# "Enter Mark For -" + ele.subject_name + " " + '('+
+              ele.subject_type +')'%>
+            </option>
+
+            <%# }) %>
+          </select>
+          <div id="selected-sub"></div>
+        </div>
+        <div id="show-list">
+          <h2 class="is-size-4 has-text-centered mt-1 has-text-weight-bold">
+            Student list
+          </h2>
+          <table>
+            <tr class="my-thead">
+              <th>SL</th>
+              <th>Student ID</th>
+              <th>Name</th>
+              <th>Written</th>
+              <th>Viva</th>
+              <th>Assignment</th>
+              <th>Quiz</th>
+            </tr>
+            <tbody id="student-list"></tbody>
+          </table>
+        </div>
+
+        <button
+          class="button mt-4 is-warning has-text-dark is-rounded has-text-weight-bold"
+          type="submit"
+        >
+          Submit
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+<script>
+  const showList = document.getElementById("show-list");
+  const subjectID = document.getElementById("subject-id");
+  /*=================================================*/
+  /***************** Get Semester ID  ***************/
+  /*==================================================*/
+  const insNumBySem = (event) => {
+    console.log("select", event.target.value);
+    const semester_id = event.target.value;
+
+    fetch(`http://localhost:8070/get-sem-by-sub-id?semester_id=${semester_id}`)
+      .then((res) => res.json())
+      .then((data) => {
+        const selectOption = '<option value="">Select Subject</option>';
+        subjectID.innerHTML =
+          selectOption +
+          data
+
+            .map(
+              (sub, index) =>
+                `<option value="${sub.subject}" data-credit="${
+                  sub.credit_hour
+                }"><span>${index + 1}.</span>Enter Marks For - ${
+                  sub.subject_name +
+                  " " +
+                  "" +
+                  sub.subject_type +
+                  "" +
+                  "(Credit-" +
+                  sub.credit_hour +
+                  ")"
+                }</option>`
+            )
+            .join("");
+      });
+  };
+
+  /*=================================================*/
+  /**************** Get Sem & sub ID  ****************/
+  /*==================================================*/
+  const getSubID = (event) => {
+    const showList = document.getElementById("show-list");
+    const subjectID = document.getElementById("subject-id");
+    const semID = document.getElementById("sem-id").value;
+    console.log("semID", semID);
+
+    console.log("sub ID", event.target.value);
+    const subID = event.target.value;
+
+    fetch(
+      `http://localhost:8070/insert-marks-sem-by-sub?semId=${semID}&subID=${subID}`
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("DDDD", data);
+        const studentList = document.getElementById("student-list");
+
+        studentList.innerHTML = data
+          .map(
+            (st, i) => `
+            <tr>
+            <td>${i + 1}</td>
+            <td>${st.st_ID}
+              <input name="studentId"  type="hidden" value="${st.st_table_id}">
+              </td>
+            <td>${st.st_name}</td>
+            <td><input  class="input is-normal"
+             type=number min="0" max="${
+               st.written_total
+             }" name="stWrNum" placeholder="Enter written  Number" required></td>
+            <td><input min="0" max="${st.viva_total}" class="input is-normal"
+             type=number   name="stVivaNum" placeholder="Enter viva Number" required></td>
+            <td><input  class="input is-normal"
+             type=number min="0" max="${
+               st.ass_total
+             }" name="stAssNum" placeholder="Enter assignment Number" required></td>
+            <td><input min="0" max="${st.quiz_total}" class="input is-normal"
+             type=number  name="stQuizNum" placeholder="Enter quiz Number" required></td>
+            </tr>
+            `
+          )
+          .join("");
+
+        if (subID) {
+          showList.style.display = "block";
+          //studentList.innerHTML = "";
+        } else {
+          showList.style.display = "none";
+        }
+      });
+  /*=================================================*/
+  /***************** show selected Index  ************/
+  /*==================================================*/
+    const selectedSub = document.getElementById("selected-sub");
+    const showSelectedSub =
+      event.target.options[event.target.selectedIndex].textContent;
+    console.log("selected sub", showSelectedSub);
+    selectedSub.innerHTML = `<h1 class="has-text-centered mt-2 has-background-primary is-size-5 has-text-white">${showSelectedSub}</h1>`;
+  };
+</script>
+<%- include("../template/footer"); -%>

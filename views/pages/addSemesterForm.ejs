@@ -1,0 +1,77 @@
+<%- include("../template/header"); -%> <%- include("../template/layout"); -%>
+<div class="main-form">
+  <div class="form-div box">
+    <form action="/insert_se" method="POST" class="control">
+      <h1
+        class="is-size-4 has-background-primary-light has-text-weight-bold has-text-centered mb-3"
+      >
+        Add Semester Form
+      </h1>
+
+      <div>
+        <label class="label">Semester Year:</label>
+        <input
+          id="sem-year"
+          class="input is-normal"
+          type="number"
+          name="seYear"
+          placeholder="Enter year"
+          oninput="useSem(event)"
+          required
+        />
+      </div>
+
+      <div id="show-use-sem"></div>
+
+      <div class="control">
+        <label class="label">Seasone:</label>
+        <select id="sem-season" name="seSeason" class="select" required>
+          <option selected>Choose Seasone</option>
+          <option>Spring</option>
+          <option>Summer</option>
+          <option>Fall</option>
+        </select>
+      </div>
+
+      <button
+        onclick="semInsert(event)"
+        class="button mt-5 is-warning has-text-dark is-rounded has-text-weight-bold"
+        type="submit"
+      >
+        Submit
+      </button>
+    </form>
+  </div>
+</div>
+
+<script>
+  /*=================================================*/
+  /***************** Get Semester ID  ***************/
+  /*==================================================*/
+  const useSem = (event) => {
+    console.log(event.target.value);
+    const newSem = event.target.value;
+    const showUseSem = document.getElementById("show-use-sem");
+    fetch(`http://localhost:8070/get-use-sem?newSem=${newSem}`)
+      .then((res) => res.json())
+      .then((data) => {
+        showUseSem.innerHTML = data
+          .map(
+            (sem, index) =>
+              `<p>${index + 1}.${
+                sem.se_year + " " + sem.se_season
+              }<span class="has-text-danger">(Already exist!)</span></p>`
+          )
+          .join("");
+      });
+  };
+
+  // const semInsert = (event) => {
+  //   const semYear = document.getElementById("sem-year");
+  //   const semSeason = document.getElementById("sem-season");
+  //   if (!semYear.value || !semSeason.value) {
+  //     alert("Input plz");
+  //   }
+  // };
+</script>
+<%- include("../template/footer"); -%>

@@ -1,0 +1,59 @@
+<%- include("../template/header"); -%> <%- include("../template/layout"); -%>
+<div class="container my-ml">
+  <div class="my-search mt-0">
+    <button class="btn-border is-rounded has-text-dark has-text-weight-bold">
+      <a href="/add-semester"
+        ><span class="las la-user-plus"></span> <span>Add A Semester</span></a
+      >
+    </button>
+    <div>
+      <form action="/search-student-id" method="POST" class="searching-box">
+        <div class="field button has-addons is-rounded">
+          <div class="control">
+            <input
+              class="input is-rounded"
+              name="searchStId"
+              type="search"
+              placeholder="Find a Student"
+            />
+          </div>
+          <div class="control">
+            <button
+              class="button has-background-primary has-text-white has-text-weight-bold is-rounded sub-btn"
+              type="submit"
+            >
+              Search
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <h1 class="has-text-left mt-2 p-2 is-size-5 has-text-weight-bold">
+    All Semester In This University
+  </h1>
+  <table>
+    <tr class="my-thead">
+      <th>SL</th>
+      <th>Semester Year</th>
+      <th>Semester Seasoon</th>
+      <th>Action</th>
+    </tr>
+    <% showSem.map((ele, index) => { %>
+    <tr>
+      <td><%= index + 1 %></td>
+      <td><%= ele.se_year %></td>
+      <td><%= ele.se_season %></td>
+      <td class="has-text-centered">
+        <a href=""
+          ><button class="my-icon-btn"><i class="las la-edit"></i></button
+        ></a>
+        <a href=""
+          ><button class="my-icon-btn"><i class="las la-user-times"></i></button
+        ></a>
+      </td>
+    </tr>
+    <% }) %>
+  </table>
+</div>
+<%- include("../template/footer"); -%>

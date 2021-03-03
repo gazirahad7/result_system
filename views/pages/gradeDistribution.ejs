@@ -1,0 +1,103 @@
+<%- include("../template/header"); -%> <%- include("../template/layout"); -%>
+<div class="main-form">
+  <div class="form-div box">
+    <form action="/insert-grade-point" class="control" method="POST">
+      <h1
+        class="is-size-4 has-text-centered mb-3 has-background-primary-light has-text-weight-bold"
+      >
+        Add Gradeing
+      </h1>
+
+      <div>
+        <label class="label">Minimum Number:</label>
+        <input
+          class="input is-normal"
+          type="number"
+          name="minNum"
+          placeholder="Enter min number "
+          required
+        />
+      </div>
+
+      <div>
+        <label class="label">Maximum Number:</label>
+        <input
+          class="input is-normal"
+          type="number"
+          name="maxNum"
+          placeholder="Enter subject code"
+          required
+        />
+      </div>
+      <div>
+        <label class="label">Grade Point:</label>
+        <input
+          class="input is-normal"
+          type="text"
+          name="gradePoint"
+          placeholder="Enter grade point"
+          required
+        />
+      </div>
+      <div>
+        <label class="label">Grade Latter:</label>
+        <input
+          class="input is-normal"
+          type="text"
+          name="gradeLatter"
+          placeholder="Enter grade latter"
+          required
+        />
+      </div>
+
+      <button
+        class="button mt-5 is-warning has-text-dark is-rounded has-text-weight-bold"
+        type="submit"
+      >
+        Submit
+      </button>
+      <a href="/show-grade-list">
+        <button
+          style="float: right"
+          class="button mt-5 is-warning is-rounded has-text-dark is-rounded has-text-weight-bold"
+          type="button"
+        >
+          Grade List
+        </button></a
+      >
+    </form>
+  </div>
+</div>
+<script>
+  const gradSub = () => {
+    let gradInput = parseFloat(document.getElementById("grad-input").value);
+
+    //alert("hi");
+
+    if (gradInput > 100 || gradInput < 0) {
+      console.log("Wrong Input");
+    } else if (gradInput >= 80) {
+      console.log("A+, Point:4.0");
+    } else if (gradInput >= 75 && gradInput <= 79) {
+      console.log("A, Point:3.75");
+    } else if (gradInput >= 70 && gradInput <= 74) {
+      console.log("A-, Point:3.50");
+    } else if (gradInput >= 65 && gradInput <= 69) {
+      console.log("B+, Point:3.25");
+    } else if (gradInput >= 60 && gradInput <= 64) {
+      console.log("B, Point:3.00");
+    } else if (gradInput >= 55 && gradInput <= 59) {
+      console.log("B-, Point:2.75");
+    } else if (gradInput >= 50 && gradInput <= 54) {
+      console.log("C, Point:2.50");
+    } else if (gradInput >= 45 && gradInput <= 49) {
+      console.log("C, Point:2.25");
+    } else if (gradInput >= 40 && gradInput <= 44) {
+      console.log("D, Point:2.00");
+    } else {
+      console.log("F, Point:0.0");
+    }
+  };
+</script>
+
+<%- include("../template/footer"); -%>

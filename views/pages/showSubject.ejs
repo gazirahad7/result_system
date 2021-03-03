@@ -1,0 +1,96 @@
+<%- include("../template/header"); -%> <%- include("../template/layout"); -%>
+<% if(showSubjects.length != 0) {%> 
+<div class="container my-ml">
+  <div class="my-search mt-0">
+    <button class="btn-border is-rounded has-text-dark has-text-weight-bold">
+      <a href="/add-subject"
+        > <i class="las la-book-medical is-size-4"></i> <span>Add A Subject</span></a
+      >
+    </button>
+
+    <button class="btn-border is-rounded has-text-dark has-text-weight-bold">
+      <a href="add-sub-by-se"
+        ><i class="las la-plus-circle is-size-4"></i></span>
+        <span>Add Subject By Semester</span></a
+      >
+    </button>
+    <div>
+      <form action="/search-subject-id" method="POST" class="searching-box">
+        <div class="field button has-addons is-rounded">
+          <div class="control">
+            <input
+              class="input is-rounded"
+              name="aSubject"
+              type="search"
+              placeholder="find a subject"
+            />
+          </div>
+          <div class="control">
+            <button
+              class="button has-background-primary my-search-btn has-text-white has-text-weight-bold is-rounded sub-btn"
+              type="submit"
+            >
+              Search
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <h1
+    class="has-text-left mt-4 p-2  is-size-5 has-text-weight-bold has-text-dark"
+  >
+    All Courses In This University
+  </h1>
+  <table>
+    <tr class="my-thead">
+      <th>SL</th>
+      <th>Subject Code</th>
+      <th>Subject Name</th>
+      <th>Subject Type</th>
+      <th>Subject Credit</th>
+      <th>Action</th>
+    </tr>
+    <% showSubjects.map((ele, index) => { %>
+    <tr>
+      <td><%= index + 1 %></td>
+      <td><%= ele.subject_code %></td>
+       <td><%= ele.subject_name%></td>
+      <td><%= ele.subject_type %></td>
+      <td><%= ele.credit_hour %></td>
+
+      <td class="has-text-centered">
+        <a href="/update-subject/<%= ele.subject_ID %>"
+          ><button title="Edit" class="my-icon-btn"><i class="las la-edit"></i></button></a
+        >
+        <a  onclick="return confirm('Are you sure, Delete this subject?')" href="/subject-delete/<%= ele.subject_ID %> "
+          ><button title="Delete" class="my-icon-btn"><i class="las la-trash"></i></button></a
+        >
+      </td>
+    </tr>
+    <% }) %>
+  </table>
+<% } else if(showSubjects.length == 0) {%> 
+    <center>
+    <div
+      class="box has-text-centered mt-5 p-2 has-background-danger is-size-5 has-text-weight-bold has-text-white box has-text-centered"
+      style="width: 450px"
+    >
+      <p>
+        <i
+          class="las la-exclamation-triangle is-size-2"
+          style="width: 450px"
+        ></i>
+      </p>
+   <div class="p-2">
+        Invalid Subject Name:<strong class="ml-2 has-text-white"
+        >"<%= subjectLen %>"</strong
+      >
+   </div>
+    </div>
+    </center>
+  <% } %> 
+
+</div>
+<%- include("../template/footer"); -%>

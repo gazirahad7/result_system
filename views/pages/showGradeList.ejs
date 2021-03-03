@@ -1,0 +1,69 @@
+<%- include("../template/header"); -%> <%- include("../template/layout"); -%>
+<div class="my-ml">
+  <div class="my-search mt-0">
+    <button class="btn-border is-rounded has-text-dark has-text-weight-bold">
+      <a href="/show-grad-sys"
+        ><span class="las la-user-plus"></span> <span>Grade Input</span></a
+      >
+    </button>
+    <div>
+      <form action="/search-student-id" method="POST" class="searching-box">
+        <div class="field button has-addons is-rounded">
+          <div class="control">
+            <input
+              class="input is-rounded"
+              name="searchStId"
+              type="search"
+              placeholder="Find a Student"
+            />
+          </div>
+          <div class="control">
+            <button
+              class="button has-background-primary my-search-btn has-text-white has-text-weight-bold is-rounded sub-btn"
+              type="submit"
+            >
+              Search
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <h1
+    class="has-text-centered mt-4 has-text-weight-bold p-2 has-background-primary is-size-5 has-text-white"
+  >
+    Gradeing System In This University
+  </h1>
+  <table class="has-text-black">
+    <tr class="my-thead">
+      <th>SL</th>
+      <th>Minimum Number</th>
+      <th>Maximum Number</th>
+      <th>Grade Point</th>
+      <th>Grade Letter</th>
+      <th>Action</th>
+    </tr>
+    <% gradeList.map((ele,index) => { %>
+    <tr>
+      <td><%= index + 1 %></td>
+      <td><%= ele.min_num %></td>
+      <td><%= ele.max_num %></td>
+      <td><%= ele.grade_point %></td>
+      <td><%= ele.grade_latter %></td>
+
+      <td class="has-text-centered">
+        <a href=""
+          ><button class="button has-background-success-light">Edit</button></a
+        >
+        <a href=""
+          ><button class="button has-background-danger-light ml-1">
+            Delete
+          </button></a
+        >
+      </td>
+    </tr>
+    <% }) %>
+  </table>
+</div>
+<%- include("../template/footer"); -%>

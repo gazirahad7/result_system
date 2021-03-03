@@ -1,0 +1,84 @@
+<%- include("../template/header"); -%> <%- include("../template/layout"); -%>
+<div class="main-form">
+  <div class="form-div box">
+    <form action="/insert_sub_by_se" method="POST" class="control">
+      <h1
+        class="is-size-4 has-text-centered has-background-primary-light has-text-weight-bold"
+      >
+        Add subject by semester Form
+      </h1>
+
+      <div>
+        <label class="label">Student Semester:</label>
+        <select onclick="getUseSub(event)" class="select" name="asbsSe">
+          <option disabled selected>Select semester</option>
+          <% showSemester.map(ele =>{ %>
+
+          <option value="<%= ele.se_id %>">
+            <%= ele.se_season + ' ' + ele.se_year %>
+          </option>
+
+          <% }) %>
+        </select>
+      </div>
+      <div id="show-msg"></div>
+
+      <div id="show-use-sub"></div>
+
+      <div class="control">
+        <label class="label">Student Subject:</label>
+        <select class="select" name="asbsSub">
+          <option disabled selected>Select subject</option>
+          <% showSubjects.map(ele =>{ %>
+
+          <option value="<%= ele.subject_ID %>">
+            <%= ele.subject_name + " " + '('+ ele.subject_type +')' %>
+          </option>
+
+          <% }) %>
+        </select>
+      </div>
+
+      <button
+        class="button mt-4 is-warning has-text-dark is-rounded has-text-weight-bold"
+        type="submit"
+      >
+        Submit
+      </button>
+    </form>
+  </div>
+</div>
+
+<script>
+  const showMsg = document.getElementById("show-msg");
+  /*=================================================*/
+  /***************** Get old sub ID  ***************/
+  /*==================================================*/
+
+  const getUseSub = (event) => {
+    console.log(event.target.value);
+    const useSubjects = event.target.value;
+    const showUseSub = document.getElementById("show-use-sub");
+    fetch(`http://localhost:8070/get-use-subjects?useSubjects=${useSubjects}`)
+      .then((res) => res.json())
+      .then((data) => {
+        showUseSub.innerHTML = data
+
+          .map(
+            (sub, index) =>
+              `<p>${index + 1}.${
+                sub.subject_name + " " + '"' + sub.subject_type + '"'
+              }<span class="has-text-danger">(Already exist!)</span></p>`
+          )
+          .join("");
+      });
+
+    const selectedSem =
+      event.target.options[event.target.selectedIndex].textContent;
+    console.log("SelectedSem", selectedSem);
+    showMsg.innerHTML = ` <h1 class="has-text-centered mt-2 has-background-primary is-size-5 has-text-white">Enter Subject For - ${selectedSem}</h1>`;
+  };
+  showMsg.style.display = "block";
+</script>
+
+<%- include("../template/footer"); -%>

@@ -1,0 +1,6 @@
+SELECT add_subject_by_semester.a_s_b_s as ASBSID, se_year,se_season,subject_name FROM add_subject_by_semester JOIN add_semester, add_subject WHERE add_subject_by_semester.semester_b_s = add_semester.se_id and add_subject_by_semester.subject = add_subject.subject_ID
+// like query 
+SELECT * FROM add_student, add_students_marks WHERE add_student.st_ID LIKE '%800%'
+
+
+

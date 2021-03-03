@@ -1,0 +1,76 @@
+<%- include("../template/header"); -%> <%- include("../template/layout"); -%>
+<div class="main-form">
+  <div class="form-div box">
+    <form action="/update-subject" class="control" method="POST">
+      <h1
+        class="is-size-4 has-text-centered mb-3 has-background-primary-light has-text-weight-bold"
+      >
+        Edit Subject Form
+      </h1>
+
+      <div>
+        <label class="label">Subject Name:</label>
+        <input
+          class="input is-normal"
+          type="text"
+          name="subName"
+          placeholder="Enter subject name"
+          onblur="getUseSub(event)"
+          value="<%= showSubjects.subject_name %>"
+          required
+        />
+      </div>
+      <div id="use-subjects"></div>
+
+      <div>
+        <label class="label">Subject Code:</label>
+        <input
+          class="input is-normal"
+          type="text"
+          name="subCode"
+          placeholder="Enter subject code"
+          value="<%= showSubjects.subject_code %>"
+          required
+        />
+      </div>
+      <div>
+        <label class="label">Subjcet Type:</label>
+        <input type="radio" name="subType" value="Theory" <%=
+        showSubjects.subject_type === "Theory" ? "checked" : "" %> />
+        <label class="radio">Theory</label>
+
+        <br />
+        <input type="radio" name="subType" value="Sessional" <%=
+        showSubjects.subject_type === "Sessional" ? "checked" : "" %> />
+        <label class="radio">Sessional</label>
+      </div>
+
+      <div>
+        <label class="label">Subjcet Credit Hour:</label>
+
+        <input type="radio" name="subCredit" value="1.5" <%=
+        showSubjects.credit_hour === 1.5 ? "checked" : ""%> />
+        <label>1.5 CREDITS</label>
+        <br />
+        <input type="radio" name="subCredit" value="3" <%=
+        showSubjects.credit_hour === 3 ? "checked" : "" %> />
+        <label>3 CREDITS</label>
+      </div>
+      <input
+        type="hidden"
+        name="subjectID"
+        value="<%= showSubjects.subject_ID %>"
+      />
+
+      <button
+        class="button mt-5 is-warning has-text-dark is-rounded has-text-weight-bold"
+        type="submit"
+      >
+        Submit
+      </button>
+    </form>
+  </div>
+</div>
+
+<script src="/js/addSub.js"></script>
+<%- include("../template/footer"); -%>

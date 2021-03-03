@@ -1,0 +1,34 @@
+<%- include("../template/header"); -%> <%- include("../template/layout"); -%>
+<div class="container my-ml">
+  <h1
+    class="has-text-centered mt-4 p-2 has-background-primary is-size-5 has-text-weight-bold has-text-white"
+  >
+    All Subjects For The Semester
+  </h1>
+  <table>
+    <tr class="my-thead">
+      <th>SL</th>
+      <th>Season</th>
+      <th>Subject Name</th>
+
+      <th>Action</th>
+    </tr>
+    <% getASBS.map((ele, index) => { %>
+    <tr>
+      <td><%= index +1 %></td>
+      <td><%= ele.se_season + " " + ele.se_year %></td>
+      <td><%= ele.subject_name%></td>
+
+      <td class="has-text-centered">
+        <a href=""
+          ><button class="button has-background-success-light">Edit</button></a
+        >
+        <a href=""
+          ><button class="button has-background-danger-light">Delete</button></a
+        >
+      </td>
+    </tr>
+    <% }) %>
+  </table>
+</div>
+<%- include("../template/footer"); -%>

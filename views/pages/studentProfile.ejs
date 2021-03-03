@@ -1,0 +1,71 @@
+<%- include("../template/header"); -%> <%- include("../template/layout"); -%>
+
+<div class="container my-ml">
+  <div class="main-form">
+    <div class="box" style="width: 300px">
+      <p class="has-text-centered">
+        <i class="las la-user-circle is-size-1"></i>
+      </p>
+      <h1
+        class="has-text-centered is-size-4 has-background-primary-light has-text-weight-bold"
+      >
+        <%= showStPro.st_name %>
+      </h1>
+
+      <div>
+        <p class="has-text-weight-bold p-3 has-text-centered">
+          <%= showStPro.se_season + " " + showStPro.se_year %>
+        </p>
+      </div>
+      <div>
+        <p class="has-text-weight-bold p-1">
+          ID:
+          <span class="ml-3 has-text-weight-normal"
+            ><%= showStPro.st_ID %></span
+          >
+        </p>
+      </div>
+
+      <div>
+        <p class="has-text-weight-bold p-1">
+          Email:
+          <span class="ml-3 has-text-weight-normal"
+            ><%= showStPro.st_email %>
+          </span>
+        </p>
+      </div>
+
+      <div>
+        <p class="has-text-weight-bold p-1">
+          Phone:
+          <span class="ml-3 has-text-weight-normal"
+            ><%= showStPro.st_phone %></span
+          >
+        </p>
+      </div>
+
+      <div class="mb-3">
+        <p class="has-text-weight-bold p-1">
+          Address:<span class="ml-3 has-text-weight-normal"
+            ><%= showStPro.st_address %>
+          </span>
+        </p>
+      </div>
+
+      <div class="has-text-centered">
+        <a href="/update/<%= showStPro.stId %>"
+          ><button title="EDIT" class="my-icon-btn">
+            <i class="las la-edit"></i></button
+        ></a>
+        <a
+          onclick="return confirm('Are you sure?')"
+          href="/student-id-delete/<%= showStPro.stId %>"
+          ><button title="DELETE" class="my-icon-btn">
+            <i class="las la-user-times"></i></button
+        ></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include("../template/footer"); -%>

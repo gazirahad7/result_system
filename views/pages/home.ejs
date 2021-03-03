@@ -1,0 +1,91 @@
+<%- include("../template/header"); -%>
+<%- include("../template/layout"); -%>
+
+<div >
+   <div class="main-content">
+ 
+
+        <div class="search-wrapper">
+           <form action="/search-student-id" method="POST"> 
+              <span class="las la-search"> </span>
+            <input name="searchStId" type="search" placeholder="Search heare" />
+           </form>
+           
+          </div>
+          <div class="admin-profile">
+             <span class="las la-user-circle"></span>
+           
+             <h4 class="has-text-weight-bold">Super Admin</h4>
+           </div>
+         
+       
+        <div class="flex-wrap">
+          <a href="/show-semester">
+             <div class="flex-item">
+              <div class="card-single 
+"  style="background-color: #fad69c;">
+          <div>
+            <h1 class="is-size-3"><%= coutSemester[0].AllSemester %>  </h1>
+            <span  class="is-size-4">All Semesters</span>
+          </div>
+          <div>
+            <span class="las la-university home-icon">
+          </div>
+           </div>
+          </div>
+          </a>
+         
+          <div class="flex-item">
+          <a href="/students">
+            <div class="card-single 
+          "style="background-color: #febfc8;">
+                <div>
+                  <h1 class="is-size-3" ><%= countStudent[0].allStudent %>  </h1>
+                  <span  class="is-size-4">Total Students</span>
+                </div>
+                <div>
+                  <span class="las la-user-graduate home-icon">
+          </div>
+        </div>
+          </a>
+          </div>
+          <div class="flex-item">
+     <a href="/subjects">
+         <div class="card-single" >
+          <div>
+            <h1 class="is-size-3"><%= coutSubject[0].AllSubject %>  </h1>
+            <span  class="is-size-4">Total Subjects</span>
+          </div>
+          <div>
+            <span class="las la-book home-icon">
+          </div>
+        </div>
+    </a>
+          </div>
+
+         <div class="flex-item">
+     <a href="/show-grade-list">
+         <div class="card-single" style="background-color: #86f3ea;">
+          <div>
+            <h1 class="is-size-3">10 </h1>
+            <span  class="is-size-4 " >Grade System</span>
+          </div>
+          <div>
+            <span class="las la-list home-icon">
+          </div>
+        </div>
+    </a>
+          </div>
+
+
+        </div>
+
+        
+
+
+      
+      
+   
+      </div>
+</div>
+ <%- include("../template/footer"); -%>

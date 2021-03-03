@@ -1,0 +1,101 @@
+<%- include("../template/header"); -%> <%- include("../template/layout"); -%>
+<div class="container my-ml">
+  <div class="my-search mt-0">
+    <button class="btn-border is-rounded has-text-dark has-text-weight-bold">
+      <a href="/add-student"
+        ><span class="las la-user-plus"></span> <span>Add A Student</span></a
+      >
+    </button>
+    <div>
+      <form action="/search-student-id" method="POST" class="searching-box">
+        <div class="field button has-addons is-rounded">
+          <div class="control">
+            <input
+              class="input is-rounded"
+              name="searchStId"
+              type="search"
+              placeholder="Find a Student"
+            />
+          </div>
+          <div class="control">
+            <button
+              class="button has-background-primary my-search-btn has-text-white has-text-weight-bold is-rounded sub-btn"
+              type="submit"
+            >
+              Search
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <% if(showSts.length != 0) {%>
+  <h1
+    class="has-text-left mt-4 p-2 is-size-5 has-text-weight-bold has-text-dark"
+  >
+    All Students
+  </h1>
+  <div class="my-table">
+    <table>
+      <tr class="my-thead">
+        <th>ID</th>
+        <th>Name</th>
+        <th>Semester</th>
+        <th>Email</th>
+        <th>Phone</th>
+        <th>Address</th>
+        <th>Action</th>
+      </tr>
+      <% showSts.map(ele => { %>
+      <tr>
+        <td><%= ele.st_ID %></td>
+        <td><%= ele.st_name %></td>
+        <td><%= ele.se_season + " " + ele.se_year %></td>
+        <td><%= ele.st_email %></td>
+        <td><%= ele.st_phone %></td>
+        <td><%= ele.st_address %></td>
+        <td class="has-text-centered">
+          <a href="/student-profile/<%= ele.stId %>"
+            ><button title="VIEW" class="my-icon-btn">
+              <i class="las la-eye"></i></button
+          ></a>
+          <a href="/update/<%= ele.stId %>"
+            ><button title="EDIT" class="my-icon-btn">
+              <i class="las la-edit"></i></button
+          ></a>
+          <a
+            onclick="return confirm('Are you sure?')"
+            href="/student-id-delete/<%= ele.stId %>"
+            ><button title="DELETE" class="my-icon-btn">
+              <i class="las la-user-times"></i></button
+          ></a>
+        </td>
+      </tr>
+      <% }) %>
+    </table>
+  </div>
+  <% } else if(showSts.length == 0) {%>
+
+  <center>
+    <div
+      class="box has-text-centered mt-5 p-2 has-background-danger is-size-5 has-text-weight-bold has-text-white box has-text-centered"
+      style="width: 450px"
+    >
+      <p>
+        <i
+          class="las la-exclamation-triangle is-size-2"
+          style="width: 450px"
+        ></i>
+      </p>
+      <div class="p-2">
+        Invalid Student ID:<strong class="ml-2 has-text-white"
+          >"<%= searchStIDText%>"</strong
+        >
+      </div>
+    </div>
+  </center>
+  <% } %>
+</div>
+<!-- <script src="/js/add.js"></script> -->
+<%- include("../template/footer"); -%>
