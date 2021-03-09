@@ -21,6 +21,15 @@ const SubjectModel = {
 
     return rows;
   },
+  // use mark dis in this semester
+  getUseSubInMark: async (semId, subId) => {
+    const subInMarkQ =
+      "SELECT SUB.subject_name FROM mark_distribution as MD JOIN add_semester on MD.sem_id = add_semester.se_id JOIN add_subject SUB on MD.sub_id = SUB.subject_ID WHERE add_semester.se_id = ? and SUB.subject_ID = ?";
+    const values = [semId, subId];
+    const [rows] = await dbConn.promise().execute(subInMarkQ, values);
+
+    return rows;
+  },
 
   /*=================================================*/
   /***************** Update query     ****************/

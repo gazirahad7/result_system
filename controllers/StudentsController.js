@@ -36,6 +36,13 @@ const StudentsController = {
     });
   },
 
+  // fetch data inserted number by sem & sub
+  showInsertedStMarksSemSub: async (req, res) => {
+    const { semID, subID } = req.query;
+    const getSubSem = await StudentsModels.getInsertedMarksBySub(semID, subID);
+    return res.json(getSubSem);
+  },
+
   /*===================== Search Request ========================*/
   getStIdReq: async (req, res) => {
     console.log(req.body);
@@ -128,19 +135,21 @@ const StudentsController = {
   insertStMark: async (req, res) => {
     const {
       studentId,
+      semesterId,
       subId,
       stWrNum,
       stVivaNum,
       stAssNum,
       stQuizNum,
     } = req.body;
-    console.log("SudentID", studentId, stWrNum);
+    console.log("SudentID", semesterId, studentId, stWrNum);
 
     let insertedMark;
     if (Array.isArray(studentId)) {
       for (let i = 0; i < studentId.length; i++) {
         insertedMark = await StudentsModels.insertStMarks(
           studentId[i],
+          semesterId[i],
           subId,
           stWrNum[i],
           stVivaNum[i],
@@ -151,6 +160,7 @@ const StudentsController = {
     } else {
       insertedMark = await StudentsModels.insertStMarks(
         studentId,
+        semesterId,
         subId,
         stWrNum,
         stVivaNum,

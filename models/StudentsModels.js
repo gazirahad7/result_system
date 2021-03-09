@@ -33,6 +33,7 @@ const StudentsModels = {
   },
   insertStMarks: async (
     studentId,
+    semesterId,
     subId,
     stWrNum,
     stVivaNum,
@@ -40,8 +41,16 @@ const StudentsModels = {
     stQuizNum
   ) => {
     const insertStMarksQ =
-      "INSERT INTO `add_students_marks`(`st_table_id`, `sub_id`, `st_wrt_mark`, `st_viva_mark`, `st_ass_mark`, `st_quiz_mark`) VALUES (?,?,?,?,?,?)";
-    const values = [studentId, subId, stWrNum, stVivaNum, stAssNum, stQuizNum];
+      "INSERT INTO `add_students_marks`(`st_table_id`, `sem_id`, `sub_id`, `st_wrt_mark`, `st_viva_mark`, `st_ass_mark`, `st_quiz_mark`) VALUES (?,?,?,?,?,?,?)";
+    const values = [
+      studentId,
+      semesterId,
+      subId,
+      stWrNum,
+      stVivaNum,
+      stAssNum,
+      stQuizNum,
+    ];
     try {
       return await dbConn.promise().execute(insertStMarksQ, values);
     } catch (err) {
@@ -138,6 +147,16 @@ const StudentsModels = {
       "SELECT add_student.st_table_id as stId, st_ID,st_name, se_year,se_season,st_email,st_phone,st_address FROM add_student JOIN add_semester on add_student.st_semester = add_semester.se_id WHERE st_ID = ?";
 
     const [rows] = await dbConn.promise().execute(seachStIdQ, [stID]);
+    return rows;
+  },
+  // insert marks for students ar validation
+  getInsertedMarksBySub: async (semId, subId) => {
+    const insertedMarkQ =
+      "SELECT  st_marks_id, se_year,se_season, subject_name FROM add_students_marks as ASM  JOIN add_semester on  ASM.sem_id = add_semester.se_id JOIN add_subject on ASM.sub_id = add_subject.subject_ID WHERE add_semester.se_id = ? and  add_subject.subject_ID = ?";
+    const values = [semId, subId];
+
+    //"SELECT st_marks_id FROM add_students_marks as ASM    WHERE ASM.sem_id =7 and ASM.sub_id = ?";
+    const [rows] = await dbConn.promise().execute(insertedMarkQ, values);
     return rows;
   },
 };

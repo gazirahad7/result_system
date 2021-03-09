@@ -9,6 +9,13 @@ const SubjectController = {
     //const showSubjects = await AppModels.getSub();
     res.render("pages/showSubject", { showSubjects, subjectLen: aSubject });
   },
+  //
+  showMarkDisErr: async (req, res) => {
+    const { semId, subId } = req.query;
+    const getError = await SubjectModel.getUseSubInMark(semId, subId);
+
+    return res.json(getError);
+  },
 
   /*=================================================*/
   /******************* Update Forms ******************/

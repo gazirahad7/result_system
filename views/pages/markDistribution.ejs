@@ -10,7 +10,12 @@
         </h2>
 
         <div>
-          <select class="select" name="semID" onchange="getSubBySem(event)">
+          <select
+            class="select"
+            id="semId"
+            name="semID"
+            onchange="getSubBySem(event)"
+          >
             <option disabled selected>Choose Semester</option>
 
             <% showSemester.map(ele =>{ %>
@@ -34,12 +39,16 @@
           id="selected-sub"
         ></h2>
 
+        <div id="mark-dis-err"></div>
+
         <div id="mark-dis">
           <div
             id="total-num"
             class="has-text-centered has-text-danger is-size-5"
           ></div>
           <div id="show-total-marks"></div>
+          <div id="pass-mark-err"></div>
+
           <label class="label">Written</label>
 
           <div class="field is-horizontal">
@@ -131,6 +140,7 @@
           </div>
         </div>
         <button
+          id="mark-submit"
           onclick="markInsert(event)"
           class="button mt-3 is-warning has-text-dark is-rounded has-text-weight-bold"
           type="submit"
@@ -145,6 +155,10 @@
   /*=================================================*/
   /***************** Get Semester ID  ***************/
   /*==================================================*/
+  const markDisError = document.getElementById("mark-dis-err");
+  const passMarkError = document.getElementById("pass-mark-err");
+  const markSubmit = document.getElementById("mark-submit");
+
   const getSubBySem = (event) => {
     //console.log(event.target.value);
     const semester_id = event.target.value;
@@ -185,11 +199,33 @@
   };
 
   const getCredit = (event) => {
+    console.log("event value", event.target.value);
+    const markDisForm = document.getElementById("mark-dis");
+
+    const semId = document.getElementById("semId").value;
+    // const subId = document.getElementById("subjects").value;
+    const subId = event.target.value;
+    const markDisError = document.getElementById("mark-dis-err");
+    console.log("subid, subId", semId, subId);
+    fetch(
+      `http://localhost:8070/get-double-insrt-mark-error?semId=${semId}&subId=${subId}`
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("data", data);
+        if (data == "") {
+          markDisError.style.display = "none";
+          markDisForm.style.display = "block";
+          markSubmit.disabled = false;
+        } else {
+          markSubmit.disabled = true;
+          markDisForm.style.display = "none";
+          markDisError.innerHTML = `<h1 class="has-text-centered has-background-danger is-size-5 has-text-weight-bold has-text-white p-3 mt-4 ">${data[0].subject_name} mark already added.</h1>`;
+        }
+      });
+
     const showSelectedSub = document.getElementById("selected-sub");
-    console.log(
-      "selected subject ",
-      event.target.options[event.target.selectedIndex].innerText
-    );
+    //console.log( "selected subject ",event.target.options[event.target.selectedIndex].innerText);
     const selectedSub =
       event.target.options[event.target.selectedIndex].textContent;
     showSelectedSub.innerHTML = selectedSub;
@@ -226,6 +262,9 @@
   /***************** Sum Pass Marks  ***************/
   /*==================================================*/
   const sumPassMarks = (event) => {
+    markSubmit.disabled = false;
+    passMarkError.innerHTML = "";
+
     const showTotalMarks = document.getElementById("show-total-marks");
     const writtenCount = Number(document.getElementById("wrCount").value);
     const vivaCount = Number(document.getElementById("vivaCount").value);
@@ -242,7 +281,9 @@
       assCount < assPass ||
       quizCount < quizPass
     ) {
-      event.target.value = 0;
+      //event.target.value = 0;
+      markSubmit.disabled = true;
+      passMarkError.innerHTML = `<h1 class="has-text-centered has-background-danger is-size-5 has-text-weight-bold has-text-white p-2 mt-1 ">Pass marks out of range!</h1>`;
     }
   };
 </script>

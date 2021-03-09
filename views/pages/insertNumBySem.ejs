@@ -32,16 +32,13 @@
             onchange="getSubID(event)"
           >
             <option disabled selected>Select Semester First</option>
-            <%# showSubjects.map(ele =>{ %>
-            <option value="<%# ele.subject_ID %>">
-              <%# "Enter Mark For -" + ele.subject_name + " " + '('+
-              ele.subject_type +')'%>
-            </option>
-
-            <%# }) %>
+            <option value=""></option>
           </select>
           <div id="selected-sub"></div>
+          <div id="null-student"></div>
         </div>
+        <div id="inserted-marks"></div>
+
         <div id="show-list">
           <h2 class="is-size-4 has-text-centered mt-1 has-text-weight-bold">
             Student list
@@ -61,6 +58,7 @@
         </div>
 
         <button
+          id="submit-num"
           class="button mt-4 is-warning has-text-dark is-rounded has-text-weight-bold"
           type="submit"
         >
@@ -72,7 +70,11 @@
 </div>
 <script>
   const showList = document.getElementById("show-list");
+  const studentList = document.getElementById("student-list");
+
   const subjectID = document.getElementById("subject-id");
+  const insertedMark = document.getElementById("inserted-marks");
+  const submitNumber = document.getElementById("submit-num");
   /*=================================================*/
   /***************** Get Semester ID  ***************/
   /*==================================================*/
@@ -110,59 +112,106 @@
   /*=================================================*/
   /**************** Get Sem & sub ID  ****************/
   /*==================================================*/
+
   const getSubID = (event) => {
-    const showList = document.getElementById("show-list");
     const subjectID = document.getElementById("subject-id");
     const semID = document.getElementById("sem-id").value;
+
     console.log("semID", semID);
 
     console.log("sub ID", event.target.value);
     const subID = event.target.value;
+    //
+    fetch(
+      `http://localhost:8070/get-inserted-sem-by-sub-mark-for-st?semID=${semID}&subID=${subID}`
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("marks data", data);
+        if (data == "") {
+          showList.style.display = "block";
+          insertedMark.innerHTML = "";
+        } else if (data != "") {
+          showList.style.display = "none";
+          const submitNumber = (document.getElementById(
+            "submit-num"
+          ).disabled = true);
+          submitNumber.disabled = true;
+          //showList.innerHTML = "";
+          insertedMark.innerHTML = `<h1 class="has-text-centered mt-2 p-2 has-background-danger is-size-5 has-text-white">This ${
+            data[0].se_season + " " + data[0].se_year
+          } semester &  subject  ${
+            data[0].subject_name
+          } marks already inserted for students.</h1>`;
+        }
+      });
 
+    //
     fetch(
       `http://localhost:8070/insert-marks-sem-by-sub?semId=${semID}&subID=${subID}`
     )
       .then((res) => res.json())
       .then((data) => {
-        console.log("DDDD", data);
-        const studentList = document.getElementById("student-list");
-
-        studentList.innerHTML = data
-          .map(
-            (st, i) => `
+        console.log("DDDD", data, semID, subID);
+        const nullStudent = document.getElementById("null-student");
+        if (data == "") {
+          showList.style.display = "none";
+          submitNumber.disabled = true;
+          nullStudent.innerHTML = `<h1 class="has-text-centered mt-3 has-background-danger is-size-5 p-3 has-text-white">There's no mark distibution in this subject.Please distibution mark for this subject 
+            <a href="/mark-dis-page" class="has-text-info">Click here</a></h1>`;
+          console.log("error");
+        } else {
+          showList.style.display = "block";
+          nullStudent.innerHTML = "";
+          submitNumber.disabled = false;
+          studentList.innerHTML = data
+            .map(
+              (st, i) => `
             <tr>
             <td>${i + 1}</td>
             <td>${st.st_ID}
               <input name="studentId"  type="hidden" value="${st.st_table_id}">
+              <input name="semesterId" class="semesterId" type="hidden" value="${
+                st.sem_id
+              }">
               </td>
             <td>${st.st_name}</td>
             <td><input  class="input is-normal"
              type=number min="0" max="${
                st.written_total
-             }" name="stWrNum" placeholder="Enter written  Number" required></td>
+             }" name="stWrNum" placeholder="Enter ${st.written_pass}/${
+                st.written_total
+              }" required></td>
             <td><input min="0" max="${st.viva_total}" class="input is-normal"
-             type=number   name="stVivaNum" placeholder="Enter viva Number" required></td>
+             type=number   name="stVivaNum" placeholder="Enter ${
+               st.viva_pass
+             }/${st.viva_total}" required></td>
             <td><input  class="input is-normal"
              type=number min="0" max="${
                st.ass_total
-             }" name="stAssNum" placeholder="Enter assignment Number" required></td>
+             }" name="stAssNum" placeholder="Enter ${st.ass_pass}/${
+                st.ass_total
+              }" required></td>
             <td><input min="0" max="${st.quiz_total}" class="input is-normal"
-             type=number  name="stQuizNum" placeholder="Enter quiz Number" required></td>
+             type=number  name="stQuizNum" placeholder="Enter ${st.quiz_pass}/${
+                st.quiz_total
+              }" required></td>
             </tr>
             `
-          )
-          .join("");
+            )
+            .join("");
 
-        if (subID) {
-          showList.style.display = "block";
-          //studentList.innerHTML = "";
-        } else {
-          showList.style.display = "none";
+          if (subID) {
+            showList.style.display = "block";
+          } else {
+            showList.style.display = "none";
+          }
         }
       });
-  /*=================================================*/
-  /***************** show selected Index  ************/
-  /*==================================================*/
+
+    /*=================================================*/
+    /***************** show selected Index  ************/
+    /*==================================================*/
     const selectedSub = document.getElementById("selected-sub");
     const showSelectedSub =
       event.target.options[event.target.selectedIndex].textContent;

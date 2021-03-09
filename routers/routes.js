@@ -4,6 +4,7 @@ const AppController = require("../controllers/AppController");
 const GradeController = require("../controllers/GradeController");
 const StudentsController = require("../controllers/StudentsController");
 const SubjectController = require("../controllers/SubjectController");
+const StudentsModels = require("../models/StudentsModels");
 // const AppModls = require("../models/AppModels");
 // const StudentsModels = require("../models/StudentsModels");
 
@@ -64,6 +65,10 @@ router.get("/get-use-subjects", AppController.showUseSubNam);
 // grade point show
 router.get("/get-grade-point", StudentsController.showStudentGPoint);
 /*============================ others Routers============================*/
-
+router.get("/get-double-insrt-mark-error", SubjectController.showMarkDisErr);
+router.get(
+  "/get-inserted-sem-by-sub-mark-for-st",
+  StudentsController.showInsertedStMarksSemSub
+);
 /*============================ Exports Routers ============================*/
 module.exports = router;

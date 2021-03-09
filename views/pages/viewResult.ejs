@@ -7,7 +7,7 @@
   <div class="profile-div">
     <div class="st-profile has-text-left has-text-weight-bold">
       <h2 class="has-text-centered has-text-weight-bold mb-0">Student Info:</h2>
-      <!-- <progress class="progress is-primary" value="100" max="100">10%</progress> -->
+
       <p>Semester: <%= showRes[0].se_season + " " + showRes[0].se_year %></p>
       <p id="studentId" data-id="<%= searchText%>">
         Student ID: <%= searchText%>
@@ -107,6 +107,8 @@
         let sumAllSubMarks = 0;
         let sumAllSubPoint = 0;
         //let totalPoint = 0;
+        let test = 0;
+        let testTwo = 0;
 
         let countFel = 0;
         let isAllPass = true;
@@ -183,7 +185,33 @@
         const avgLetter = document.getElementById("avg-letter");
         const totalFel = document.getElementById("count-fel");
         totalMarks.textContent = sumAllSubMarks;
-        avgPoint.textContent = sumAllSubPoint / result.childElementCount;
+        //
+        let getAvgLetter = (avgPoint.textContent =
+          sumAllSubPoint / result.childElementCount);
+
+        if (getAvgLetter >= 4) {
+          console.log("A+");
+          avgLetter.textContent = "A+";
+        } else if (getAvgLetter >= 3.75 && getAvgLetter < 4) {
+          console.log("A");
+        } else if (getAvgLetter >= 3.5 && getAvgLetter < 3.75) {
+          console.log("A-");
+          avgLetter.textContent = "A-";
+        } else if (getAvgLetter >= 3.25 && getAvgLetter < 3.5) {
+          avgLetter.textContent = "B+";
+        } else if (getAvgLetter >= 3 && getAvgLetter < 3.25) {
+          avgLetter.textContent = "B";
+        } else if (getAvgLetter >= 2.75 && getAvgLetter < 3) {
+          avgLetter.textContent = "B-";
+        } else if (getAvgLetter >= 2.5 && getAvgLetter < 2.75) {
+          avgLetter.textContent = "C+";
+        } else if (getAvgLetter >= 2.25 && getAvgLetter < 2.5) {
+          avgLetter.textContent = "C";
+        } else if (getAvgLetter >= 2 && getAvgLetter < 2.25) {
+          avgLetter.textContent = "D";
+        } else if (getAvgLetter < 2) {
+          avgLetter.textContent = "F";
+        }
 
         // const avgGrade = getGradeByNum(
         //   isAllPass ? sumAllSubMarks / result.childElementCount : 0
@@ -192,11 +220,11 @@
         // avgPoint.textContent = avgGrade.point;
         // avgLetter.textContent = avgGrade.letter;
 
-        const avgGrade = getGradeByLetter(
-          //isAllPass ? sumAllSubMarks / result.childElementCount : 0
-          isAllPass ? sumAllSubPoint / result.childElementCount : 0
-        );
-        avgLetter.textContent = avgGrade.letter;
+        // const avgGrade = getGradeByLetter(
+        //   //isAllPass ? sumAllSubMarks / result.childElementCount : 0
+        //   isAllPass ? sumAllSubPoint / result.childElementCount : 0
+        // );
+        //avgLetter.textContent = avgGrade.letter;
 
         if (countFel === 0) {
           totalFel.style.displaye = "none";
@@ -217,12 +245,12 @@
     return { point: grade.grade_point, letter: grade.grade_latter };
   }
   //
-  function getGradeByLetter(point) {
-    const grade = allGrades.find(
-      (grade) => point >= grade.grade_point && point <= grade.grade_point
-    );
-    //console.log(allGrades, number, grade);
-    return { letter: grade.grade_latter };
-  }
+  // function getGradeByLetter(point) {
+  //   const grade = allGrades.find(
+  //     (grade) => point >= grade.grade_point && point <= grade.grade_point
+  //   );
+  //   //console.log(allGrades, number, grade);
+  //   return { letter: grade.grade_latter };
+  // }
 </script>
 <%-include("../template/footer"); -%>
